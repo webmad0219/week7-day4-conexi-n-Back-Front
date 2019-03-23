@@ -1,15 +1,15 @@
 require('dotenv').config();
 
-const bodyParser   = require('body-parser');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const express      = require('express');
-const mongoose     = require('mongoose');
-const logger       = require('morgan');
-const path         = require('path');
+const express = require('express');
+const mongoose = require('mongoose');
+const logger = require('morgan');
+const path = require('path');
 const cors = require("cors");
 
 mongoose
-  .connect('mongodb://localhost/server', {useNewUrlParser: true})
+  .connect('mongodb://localhost/coasters', { useNewUrlParser: true })
   .then(x => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
@@ -27,32 +27,23 @@ const whiteList = ["http://localhost:5000"]
 const corsOptions = {
   origin: (origin, cb) => {
     const originIsWhitelisted = whiteList.includes(origin);
-    cb(null, originIsWhitelisted) 
+    cb(null, originIsWhitelisted)
   }
- }
+}
 
 app.use(cors(corsOptions));
 
-// Middleware Setup
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Express View engine setup
-
-      
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
-// default value for title local
-
-
-
-const index = require('./routes/index');
-app.use('/api', index);
+const coasters = require('./routes/coasters');
+app.use('/api', coasters);
 
 
 module.exports = app;
